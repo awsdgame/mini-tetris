@@ -5,8 +5,9 @@ const gridWidth = 10;
 const gridHeight = 20;
 const blockSize = 20;
 
-
-
+const startBtn = document.querySelector("#startBtn");
+let intervalId = null;
+let isGameRunning = false;
 let score = 0;
 const scoreDisplay = document.querySelector('#score');
 const SHAPES = [
@@ -19,7 +20,10 @@ const SHAPES = [
     [[1, 0], [1, 1], [0, 1]] // Z
 ];
 
-const board = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(0));
+let board = {};
+let block = {};
+
+
 
 function drawBlock(x, y, color = 'red') {
     ctx.fillStyle = color;
@@ -45,7 +49,7 @@ function getRandomShape() {
     };
 }
 
-let block = getRandomShape();
+
 
 function drawBoard() {
     ctx.clearRect(0, 0, canva.width, canva.height);
@@ -114,6 +118,8 @@ function gameLoop() {
 }
 
 document.addEventListener('keydown', e => {
+    if(!isGameRunning) return;
+
     if (e.key === 'ArrowLeft' && canMove(block.x - 1, block.y)) {
         block.x--;
     } else if (e.key === 'ArrowRight' && canMove(block.x + 1, block.y)) {
@@ -124,4 +130,18 @@ document.addEventListener('keydown', e => {
     drawBoard();
 });
 
-setInterval(gameLoop, 500);
+// Start the game!
+function startGame() {
+    board = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(0));
+    score = 0;
+    scoreDisplay.textContent = score;
+    block = getRandomShape();
+    isGameRunning = true;
+
+    if (intervalId) clearInterval(intervalId);
+    intervalId = setInterval(gameLoop, 500);
+    drawBoard();
+}
+
+
+startBtn.addEventListener('click', startGame);
