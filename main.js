@@ -5,6 +5,10 @@ const gridWidth = 10;
 const gridHeight = 20;
 const blockSize = 20;
 
+
+
+let score = 0;
+const scoreDisplay = document.querySelector('#score');
 const SHAPES = [
     [[1, 1, 1, 1]], // I
     [[1, 1], [1, 1]], // O
@@ -84,11 +88,19 @@ function placeBlock() {
 }
 
 function clearFullRows() {
+    let linesCleared = 0;
     for (let y = gridHeight - 1; y >= 0; y--) {
         if (board[y].every(cell => cell === 1)) {
             board.splice(y, 1);
             board.unshift(Array(gridWidth).fill(0));
+            linesCleared++;
+            y++;
         }
+    }
+    if (linesCleared > 0) {
+        const pointTable = [0, 40, 100, 300, 1200];
+        score += pointTable[linesCleared];
+        scoreDisplay.innerText = score;
     }
 }
 
